@@ -63,7 +63,8 @@ class DAW:
                 in_degree[neighbor] -= 1
                 # If neighbor has no more incoming edges add it to empty set
                 if in_degree[neighbor] == 0:
-                    empty.add(neighbor)
+                    empty.add(neighbor)#
+        
         if len(result) != len(in_degree):
             return None # Not DAG
         else:
@@ -75,9 +76,8 @@ class DAW:
         tasks_priority = []
         for mtask in self.tasks:
             task_name = mtask.module_name
-            #print(task_name)
-            index = ordered_tasks_list.index(task_name)
-            tasks_priority.append(index)
+            ind = ordered_tasks_list.index(task_name)
+            tasks_priority.append(ind)
         return tasks_priority
         
     def insert_tasks(self, new_tasks):

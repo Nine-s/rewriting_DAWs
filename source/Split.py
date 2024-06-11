@@ -78,7 +78,6 @@ def find_last_split_task(DAW, annotation_database, align_task):
     return last_split_task
 
 def split(DAW, annotation_database, input_description, split_operation, predict_runtime, input_type_split, i_split_task, i_merge_task=None):
-    
     if input_type_split == "sample":
         if ( len(DAW.infra.list_nodes) < len(DAW.input.input_samples) ):
             print(str(len(DAW.infra.list_nodes)) + " < " + str(len(DAW.input.input_samples)))
@@ -136,6 +135,7 @@ def split(DAW, annotation_database, input_description, split_operation, predict_
             
             #insert split task
             add_s_inputs = {}
+            
             if "channel_operators" in i_split_task:
                 add_s_inputs["channel_operators"] = i_split_task["channel_operators"]
             add_s_inputs["include_from"] = i_split_task["module_name"]
@@ -143,9 +143,11 @@ def split(DAW, annotation_database, input_description, split_operation, predict_
                              i_split_task["parameters"], i_split_task["operation"], \
                             (i_split_task["module_name"] + "_" + to_split_task.tool.upper()), i_split_task["module_path"], \
                             input_description, add_s_inputs)
-            DAW.insert_tasks(split_task) 
             split_task_output = split_task.module_name + ".out_channel." + split_task.outputs[0]
             first_split_task.change_input(split_task_output, input_to_split)
+            DAW.insert_tasks(split_task) 
+
+
 
             #insert merge task if provided
             if(i_merge_task!=None):  

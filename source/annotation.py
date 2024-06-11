@@ -36,17 +36,17 @@ class AnnotationDB:
         cpu_values = df_runtime[["CPUMHz"]]
         
         ram_scaler = StandardScaler()
-        RAM_normalized = ram_scaler.fit_transform(ram_values)
+        RAM_normalized = ram_scaler.fit_transform(ram_values.values)
         df_RAM = pd.DataFrame(RAM_normalized, columns=["RAM"])
         df_runtime.loc[:,["RAM"]] = df_RAM
 
         cpu_scaler = StandardScaler()
-        CPU_normalized = cpu_scaler.fit_transform(cpu_values)
+        CPU_normalized = cpu_scaler.fit_transform(cpu_values.values)
         df_CPU = pd.DataFrame(CPU_normalized, columns=["CPUMHz"])
         df_runtime.loc[:,["CPUMHz"]] = df_CPU
 
         dataset_size_scaler = StandardScaler()
-        dataset_size_scaler.fit(dataset_sizes)
+        dataset_size_scaler.fit(dataset_sizes.values)
         list_models = {}
 
         for infra in infrastructures:
@@ -55,7 +55,7 @@ class AnnotationDB:
             list_models[infra]["RAM"] = np.mean(df_infra["RAM"].tolist())
             list_models[infra]["CPU"] = np.mean(df_infra["CPUMHz"].tolist())
 
-            X_normalized = pd.Series(dataset_size_scaler.transform(df_infra[columns_to_normalize]).flatten())
+            X_normalized = pd.Series(dataset_size_scaler.transform(df_infra[columns_to_normalize].values).flatten())
             #X_normalized.reset_index(inplace=True)
             df_infra.reset_index(inplace=True)
             df_normalized = pd.DataFrame(X_normalized, columns=columns_to_normalize)
@@ -91,7 +91,7 @@ class AnnotationDB:
                 print("No annotation data to fit a runtime estimation model for split-merge-processes for infrastructure " + infra)
             else:
                 column_to_normalize = ['dataset_size']
-                X_normalized = pd.Series(self.dataset_scaler.transform(df_infra[column_to_normalize]).flatten())
+                X_normalized = pd.Series(self.dataset_scaler.transform(df_infra[column_to_normalize].values).flatten())
                 df_infra.reset_index(inplace=True)
                 df_normalized = pd.DataFrame(X_normalized, columns=column_to_normalize)
                 df_infra.loc[:, column_to_normalize] = df_normalized
